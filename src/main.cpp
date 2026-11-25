@@ -8,6 +8,7 @@
 #include "repository.hpp"
 #include "router.hpp"
 #include "stock_controller.hpp"
+#include "admin_controller.hpp"
 
 int main() {
     using namespace inventory;
@@ -20,7 +21,7 @@ int main() {
     router.add(std::make_unique<ProductController>(service));
     router.add(std::make_unique<StockController>(service));
     router.add(std::make_unique<OrderController>(service));
-
+    router.add(std::make_unique<AdminController>(service));
     std::cout << "inventory manager. type help for the commands, quit to leave.\n";
     std::string line;
     while (std::cout << "> " && std::getline(std::cin, line)) {
