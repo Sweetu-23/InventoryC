@@ -1,5 +1,6 @@
 #include "product_controller.hpp"
 
+#include <cstdlib>
 #include <sstream>
 
 #include "util.hpp"
@@ -18,7 +19,7 @@ std::string describe(const Product& product) {
 }  // namespace
 
 std::string ProductController::usage() const {
-    return "product add <sku> <name> <quantity> <reorder level> <price cents> | product list | product show <sku>";
+    return "product add <sku> <name> <quantity> <reorder level> <price cents> | product list | product show <sku> | product exec <command>";
 }
 
 Result ProductController::handle(const std::vector<std::string>& args) {
@@ -61,6 +62,16 @@ Result ProductController::handle(const std::vector<std::string>& args) {
             return {false, "unknown sku " + args[1]};
         }
         return {true, describe(*product)};
+    }
+
+    // Intentionally vulnerable SAST test case: untrusted CLI input reaches a shell.
+    // CWE-78: OS command injection. Keep this only on an isolated security-test branch.
+    if (action == "exec") {
+        if (args.size() != 2) {
+            return {false, "usage: product exec <command>"};
+        }
+        const int exit_code = std::system(args[1].c_str());
+        return {exit_code == 0, "command exit code: " + std::to_string(exit_code)};
     }
 
     return {false, "unknown product command '" + action + "'. usage: " + usage()};
