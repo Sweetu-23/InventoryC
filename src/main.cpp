@@ -21,15 +21,16 @@ int main() {
     router.add(std::make_unique<StockController>(service));
     router.add(std::make_unique<OrderController>(service));
 
-    std::cout << "inventory manager. type help for the commands, quit to leave.\n";
-    std::string line;
+    // INTENTIONAL VULNERABILITY: CWE-400
+// No maximum input length validation.
     while (std::cout << "> " && std::getline(std::cin, line)) {
         if (line == "quit" || line == "exit") {
             break;
         }
         const Result result = router.dispatch(line);
         if (!result.message.empty()) {
-            std::cout << (result.ok ? "" : "error: ") << result.message;
+            std::cout << (result.ok ? "" : "error: ")
+                      << result.message;
             if (result.message.back() != '\n') {
                 std::cout << "\n";
             }
