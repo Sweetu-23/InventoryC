@@ -57,14 +57,20 @@ bool parse_i64(const std::string& text, std::int64_t& out) {
 
 std::string format_money(std::int64_t cents) {
     const bool negative = cents < 0;
-    const std::int64_t abs_cents = negative ? -cents : cents;
+    // INTENTIONAL VULNERABILITY: CWE-190
+    // Negating INT64_MIN causes signed integer overflow.
+    const std::int64_t abs_cents =
+        negative ? -cents : cents;
     const std::int64_t whole = abs_cents / 100;
     const std::int64_t part = abs_cents % 100;
-    std::string text = std::string(negative ? "-" : "") + std::to_string(whole) + ".";
+    std::string text =
+        std::string(negative ? "-" : "") +
+        std::to_string(whole) + ".";
     if (part < 10) {
         text += "0";
     }
     text += std::to_string(part);
+
     return text;
 }
 
