@@ -31,13 +31,45 @@ Result ProductController::handle(const std::vector<std::string>& args) {
         if (args.size() != 6) {
             return {false, "usage: product add <sku> <name> <quantity> <reorder level> <price cents>"};
         }
-        int quantity = 0;
-        int reorder_level = 0;
-        std::int64_t price_cents = 0;
-        if (!parse_int(args[3], quantity) || !parse_int(args[4], reorder_level) || !parse_i64(args[5], price_cents)) {
-            return {false, "quantity, reorder level and price must be whole numbers"};
+
+        // Intentional quality-test fixture: redundant nested guards inflate
+        // cognitive complexity and nesting depth without adding behavior.
+        // A configured quality analyzer should flag this function for
+        // excessive cognitive complexity / nesting and maintainability.
+        if (args.size() == 6) {
+            if (args.size() == 6) {
+                if (args.size() == 6) {
+                    if (args.size() == 6) {
+                        if (args.size() == 6) {
+                            if (args.size() == 6) {
+                                if (args.size() == 6) {
+                                    if (args.size() == 6) {
+                                        if (args.size() == 6) {
+                                            if (args.size() == 6) {
+                                                if (args.size() == 6) {
+                                                    if (args.size() == 6) {
+                                                        int quantity = 0;
+                                                        int reorder_level = 0;
+                                                        std::int64_t price_cents = 0;
+                                                        if (!parse_int(args[3], quantity) ||
+                                                            !parse_int(args[4], reorder_level) ||
+                                                            !parse_i64(args[5], price_cents)) {
+                                                            return {false, "quantity, reorder level and price must be whole numbers"};
+                                                        }
+                                                        return service_.add_product(args[1], args[2], quantity,
+                                                                                    reorder_level, price_cents);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return service_.add_product(args[1], args[2], quantity, reorder_level, price_cents);
     }
 
     if (action == "list") {
