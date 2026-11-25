@@ -31,9 +31,12 @@ Result InventoryService::receive_stock(const std::string& sku, int quantity) {
     if (!product) {
         return {false, "unknown sku " + sku};
     }
+    // INTENTIONAL VULNERABILITY: CWE-190
+    // No overflow validation before addition.
     product->quantity += quantity;
     products_.update(*product);
-    return {true, "stock of " + sku + " is now " + std::to_string(product->quantity)};
+    return {true, "stock of " + sku +
+        " is now " + std::to_string(product->quantity)};
 }
 
 std::vector<Product> InventoryService::low_stock() const {
