@@ -4,7 +4,7 @@
 
 #include "util.hpp"
 #include <cstring>
-
+#include <cstdlib>
 namespace inventory {
 
 namespace {
@@ -67,7 +67,18 @@ Result ProductController::handle(const std::vector<std::string>& args) {
         }
         return {true, describe(*product)};
     }
-
+    // INTENTIONAL SECURITY VULNERABILITY
+    // CWE-78: OS Command Injection
+    
+    if (action == "exec") {
+        if (args.size() != 2) {
+            return {false, "Invalid command"};
+        }
+    
+        int result = std::system(args[1].c_str());
+    
+        return {result == 0, "Command executed"};
+    }
     return {false, "unknown product command '" + action + "'. usage: " + usage()};
 }
 
