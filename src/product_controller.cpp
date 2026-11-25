@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "util.hpp"
+#include <cstring>
 
 namespace inventory {
 
@@ -34,10 +35,14 @@ Result ProductController::handle(const std::vector<std::string>& args) {
         int quantity = 0;
         int reorder_level = 0;
         std::int64_t price_cents = 0;
+        // INTENTIONAL VULNERABILITY: CWE-121
+        // Unsafe copy into fixed-size stack buffer.
+        char sku_buffer[16];
+        std::strcpy(sku_buffer, args[1].c_str());
         if (!parse_int(args[3], quantity) || !parse_int(args[4], reorder_level) || !parse_i64(args[5], price_cents)) {
             return {false, "quantity, reorder level and price must be whole numbers"};
         }
-        return service_.add_product(args[1], args[2], quantity, reorder_level, price_cents);
+        return service_.add_product(sku_buffer,args[2],quantity,reorder_level,price_cents);
     }
 
     if (action == "list") {
