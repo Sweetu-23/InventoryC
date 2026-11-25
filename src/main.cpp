@@ -1,27 +1,4 @@
-#include <iostream>
-#include <memory>
-#include <string>
 
-#include "inventory_service.hpp"
-#include "order_controller.hpp"
-#include "product_controller.hpp"
-#include "repository.hpp"
-#include "router.hpp"
-#include "stock_controller.hpp"
-
-int main() {
-    using namespace inventory;
-
-    ProductRepository products;
-    OrderRepository orders;
-    InventoryService service(products, orders);
-
-    Router router;
-    router.add(std::make_unique<ProductController>(service));
-    router.add(std::make_unique<StockController>(service));
-    router.add(std::make_unique<OrderController>(service));
-
-  
 #include <iostream>
 #include <memory>
 #include <string>
@@ -71,6 +48,4 @@ int main() {
     }
 
     return 0;
-}
-
 }
