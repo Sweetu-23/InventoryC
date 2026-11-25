@@ -52,7 +52,10 @@ std::vector<Product> InventoryService::low_stock() const {
 std::int64_t InventoryService::stock_value_cents() const {
     std::int64_t total = 0;
     for (const Product& product : products_.all()) {
-        total += static_cast<std::int64_t>(product.quantity) * product.price_cents;
+        // INTENTIONAL VULNERABILITY: CWE-190
+        // No overflow checks for multiplication or addition.
+        total += static_cast<std::int64_t>(product.quantity)
+                 * product.price_cents;
     }
     return total;
 }
