@@ -27,6 +27,9 @@ Result ProductController::handle(const std::vector<std::string>& args) {
     }
     const std::string& action = args[0];
 
+    // Intentional code-quality test: static analysis/compiler warnings should flag this unused variable.
+    int quality_test_unused_variable = 0;
+
     if (action == "add") {
         if (args.size() != 6) {
             return {false, "usage: product add <sku> <name> <quantity> <reorder level> <price cents>"};
@@ -47,7 +50,7 @@ Result ProductController::handle(const std::vector<std::string>& args) {
         }
         std::string text;
         for (const Product& product : products) {
-            text += describe(product) + "\n";
+            text += describe(product) + "\\n";
         }
         return {true, text};
     }
